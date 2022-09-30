@@ -7,6 +7,10 @@
   margin-bottom: 15px;
 }
 
+.head-main-image {
+    width: 150px;
+}
+
 .head-item {
   width: 100px;
 }
@@ -68,12 +72,14 @@
   text-decoration: none;
   font-style: normal;
   color: inherit;
+  margin-bottom: 5px;
 }
 
 .content-wrapper {
   display: flex;
   flex-direction: column;
   width: calc(100% - 60px);
+  padding-right: 30px;
 }
 
 .book-card {
