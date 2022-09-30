@@ -7,36 +7,65 @@
 </head>
 <body>
     <div class="header">
-        <img src="wwwroot/static-images/dotbook.png" width="100" height="100"/>
-        <span class="search">
-            <input type="text" placeholder="Найти книги..."/>
-            <img src="wwwroot/static-images/search.png" width="50" height="50"/>
-        </span>
-        <img src="wwwroot/static-images/liked.png" width="100" height="100"/>
-        <a href="login.html"><img src="wwwroot/static-images/login.png" width="100" height="100"/></a>
+        <img class="head-item" src="wwwroot/static-images/dotbook.png"/>
+        <div class="head-item-2" class="search">
+            <div class="search-sub">
+              <input class="head-search-inp" type="text" placeholder="Найти книги..."/>
+            </div>
+            <img class="head-search-img" src="wwwroot/static-images/search.png"/>
+        </div>
+        <img class="head-item" src="wwwroot/static-images/liked.png"/>
+        <a href="login.html"><img class="head-item" src="wwwroot/static-images/login.png"/></a>
     </div>
-    <div class="menu">
-        <ul>
-          <li><a href="index.html">Языки программирования</a></li>
-          <li><a href="index.html">Архитектура и паттерны</a></li>
-          <li><a href="index.html">Data science</a></li>
-          <li><a href="index.html">Алгоритмы и структуры данных</a></li>
-          <li><a href="index.html">IoT и IIoT</a></li>
-        </ul>
-    </div>
-    <div class="content-wrapper">
+    <div class="wrapper">
+      <div class="menu">
+        <div class="menu-item">
+          <a href="index.html">Языки программирования</a>
+        </div>
+        <div class="menu-item">
+          <a href="index.html">Архитектура и паттерны</a>
+        </div>
+        <div class="menu-item">
+          <a href="index.html">Data science</a>
+        </div>
+        <div class="menu-item">
+          <a href="index.html">Алгоритмы и структуры данных</a>
+        </div>
+        <div class="menu-item">
+          <a href="index.html">IoT и IIoT</a>
+        </div>
+      </div>
+      <div class="content-wrapper">
         <div class="book-card">
+          <div class="book-card-sub">
+            <img src="wwwroot/covers/cover1.png"/>
             <div class="book-card-content">
-                <img src="wwwroot/covers/cover1.png" width="50" height="100"/>
                 <p>Паттерны объектно-ориентированного программирования</p>
                 <p>Автор(ы): Э. Гамма, Р. Хелм, Р. Джонсон, Дж. Влиссидес</p>
                 <p>Год выпуска: 2020</p>
                 <p>Издание: ООО Издательство "Питер"</p>
             </div>
-            <div class="book-card-footer">
-                <a href="index.html">В избранное</a>
-                <a href="index.hltm"><b>Читать!</b></a>
-            </div>
+          </div>
+          <div class="book-card-footer">
+              <a href="index.html">В избранное</a>
+              <a href="index.hltm"><b>Читать!</b></a>
+          </div>
         </div>
+        <div class="book-card">
+          <div class="book-card-sub">
+            <img src="wwwroot/covers/cover1.png"/>
+            <div class="book-card-content">
+                <p>Паттерны объектно-ориентированного программирования</p>
+                <p>Автор(ы): Э. Гамма, Р. Хелм, Р. Джонсон, Дж. Влиссидес</p>
+                <p>Год выпуска: 2020</p>
+                <p>Издание: ООО Издательство "Питер"</p>
+            </div>
+          </div>
+          <div class="book-card-footer">
+              <a href="index.html">В избранное</a>
+              <a href="index.hltm"><b>Читать!</b></a>
+          </div>
+        </div>
+      </div>
     </div>
 </body>
