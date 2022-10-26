@@ -8,18 +8,19 @@
 </head>
 <body>
     <div class="header">
-        <img class="head-main-image" src="wwwroot/static-images/dotbook.png"/>
-        <div class="head-item-2" class="search">
-            <div class="search-sub">
-              <input class="head-search-inp" type="text" placeholder="Найти книги..."/>
-            </div>
-            <img class="head-search-img" src="wwwroot/static-images/search.png"/>
-        </div>
-        <img class="head-item" src="wwwroot/static-images/liked.png"/>
+        <a href="index.html"><img class="head-main-image" src="wwwroot/static-images/dotbook.png"/></a>
+        <form class="form-inline head-item-2">
+          <input class="form-control mr-sm-2" type="search" placeholder="Найти книги..." aria-label="Search">
+          <button class="btn btn-outline-dark my-2 my-sm-0" type="submit">Найти!</button>
+        </form>
+        <a href="index.html"><img class="head-item" src="wwwroot/static-images/liked.png"/></a>
         <a href="login.html"><img class="head-item" src="wwwroot/static-images/login.png"/></a>
     </div>
     <div class="wrapper">
       <div class="menu">
+        <div class="d-flex text-center">
+          <h5>Книги по категориям</h5>
+        </div>
         <div class="menu-item">
           <a href="index.html">Языки программирования</a>
         </div>
@@ -41,7 +42,7 @@
           <div class="book-card-sub">
             <img src="wwwroot/covers/cover1.png"/>
             <div class="book-card-content">
-                <p>Паттерны объектно-ориентированного программирования</p>
+                <h3>Паттерны объектно-ориентированного программирования</h3>
                 <p>Автор(ы): Э. Гамма, Р. Хелм, Р. Джонсон, Дж. Влиссидес</p>
                 <p>Год выпуска: 2020</p>
                 <p>Издание: ООО Издательство "Питер"</p>
@@ -56,7 +57,7 @@
           <div class="book-card-sub">
             <img src="wwwroot/covers/cover1.png"/>
             <div class="book-card-content">
-                <p>Паттерны объектно-ориентированного программирования</p>
+                <h3>Паттерны объектно-ориентированного программирования</h3>
                 <p>Автор(ы): Э. Гамма, Р. Хелм, Р. Джонсон, Дж. Влиссидес</p>
                 <p>Год выпуска: 2020</p>
                 <p>Издание: ООО Издательство "Питер"</p>
