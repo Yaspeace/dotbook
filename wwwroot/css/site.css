@@ -105,3 +105,45 @@
   height: 200px;
   border: 5px solid gray;
 }
+
+.login {
+  height: 90vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 100%;
+  align-items: center;
+}
+
+.inner-wrapper {
+  width: 35%;
+}
+
+.login input {
+  text-align: center;
+  height: 40px;
+  border-radius: 15px;
+  width: 100%;
+  max-width: 300px;
+}
+
+.login-input {
+  border: 1px solid black;
+}
+
+/* Возможно, это пригодится для мозилы/ехплорера 
+::-webkit-input-placeholder {
+  text-align: center;
+}
+
+:-moz-placeholder {
+  text-align: center;
+}
+*/
+

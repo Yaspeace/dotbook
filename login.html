@@ -2,17 +2,22 @@
 
 <head>
     <meta charset="utf-8"/>
-    <title>DOTBOOK</title>
+    <title>Login|DOTBOOK</title>
+    <link rel="stylesheet" href="wwwroot/bootstrap/css/bootstrap.css"/>
+    <link rel="stylesheet" href="wwwroot/css/site.css"/>
 </head>
 <body>
-    <a href="index.html">Назад</a>
-    <div class="login">
-        <form class="login-form">
-            <p>Введите учетные данные</p>
-            <input type="text" placeholder="Логин"/><br>
-            <input type="password" placeholder="Пароль"/><br>
-            <input type="submit" value="Зарегистрироваться"/><br>
-            <input type="reset" value="Отмена"/><br>
-        </form>
+    <div class="d-flex flex-row justify-content-center">
+        <div class="d-flex flex-column justify-content-center text-center inner-wrapper">
+            <h1>Вход</h1>
+            <div class="login">
+                <form class="login-form">
+                    <p>Введите учетные данные</p>
+                    <input class="login-input" type="text" placeholder="Логин"/><br>
+                    <input class="login-input" type="password" placeholder="Пароль"/><br>
+                    <input class="btn btn-dark login-btn" type="submit" value="Войти!"/>
+                </form>
+            </div>
+        </div>
     </div>
 </body>
