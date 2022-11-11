@@ -1,12 +1,12 @@
 <template>
     <div class="navmenu">
-        <a href="index.html"><img class="navmenu-main-image" src="@/assets/dotbook.png"/></a>
+        <router-link to="/"><img class="navmenu-main-image" src="@/assets/dotbook.png"/></router-link>
         <form class="form-inline navmenu-item-2">
           <input class="form-control mr-sm-2 navmenu-search-inp" type="search" placeholder="Найти книги..." aria-label="Search">
           <button class="btn btn-outline-dark my-2 my-sm-0" type="submit">Найти!</button>
         </form>
         <a href="index.html"><img class="navmenu-item" src="@/assets/liked.png"/></a>
-        <a href="login.html"><img class="navmenu-item" src="@/assets/login.png"/></a>
+        <router-link :to="{ name: 'login', params: { register: 'false' } }"><img class="navmenu-item" src="@/assets/login.png"/></router-link>
     </div>
 </template>
 
