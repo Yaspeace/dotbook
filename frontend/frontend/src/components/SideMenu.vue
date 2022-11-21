@@ -3,27 +3,29 @@
         <div class="d-flex text-center">
           <h5>Книги по категориям</h5>
         </div>
-        <div class="menu-item">
-          <a href="index.html">Языки программирования</a>
-        </div>
-        <div class="menu-item">
-          <a href="index.html">Архитектура и паттерны</a>
-        </div>
-        <div class="menu-item">
-          <a href="index.html">Data science</a>
-        </div>
-        <div class="menu-item">
-          <a href="index.html">Алгоритмы и структуры данных</a>
-        </div>
-        <div class="menu-item">
-          <a href="index.html">IoT и IIoT</a>
+        <div v-for="theme in themes" :key="theme.id" v-on:click="themeClick(theme.id)" class="menu-item">
+          <a href="#">{{theme.name}}</a>
         </div>
       </div>
 </template>
 
 <script>
 export default {
-    name: 'SideMenu'
+    name: 'SideMenu',
+    data() {
+      return {
+        themes: []
+      }
+    },
+    created() {
+      this.$http.get('/Theme')
+        .then((responce) => this.themes = responce.data)
+    },
+    methods: {
+      themeClick: function(id) {
+        alert(id);
+      }
+    }
 }
 </script>
 

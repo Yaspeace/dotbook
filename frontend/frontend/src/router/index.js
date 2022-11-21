@@ -20,6 +20,11 @@ const routes = [
     name: 'login',
     component: () => import('../views/LoginView.vue'),
     props: true
+  },
+  {
+    path: '/bookadd',
+    name: 'bookadd',
+    component: () => import('../views/BookAddView.vue')
   }
 ]
 

@@ -5,8 +5,14 @@ import './plugins/bootstrap-vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
+import axios from 'axios'
+import 'vue-search-select/dist/VueSearchSelect.css'
 
 Vue.config.productionTip = false
+
+Vue.prototype.$http = axios.create({
+  baseURL: 'https://localhost:44337/api'
+})
 
 new Vue({
   router,

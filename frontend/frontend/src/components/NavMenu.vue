@@ -7,6 +7,7 @@
         </form>
         <a href="index.html"><img class="navmenu-item" src="@/assets/liked.png"/></a>
         <router-link :to="{ name: 'login', params: { register: 'false' } }"><img class="navmenu-item" src="@/assets/login.png"/></router-link>
+        <router-link to="/bookadd">+</router-link>
     </div>
 </template>
 

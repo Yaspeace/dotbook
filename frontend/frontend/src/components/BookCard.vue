@@ -2,12 +2,14 @@
 <template>
     <div class="book-card">
           <div class="book-card-sub">
-            <img src="@/assets/covers/cover1.png"/>
+            <!--<img src="@/assets/covers/cover1.png"/>-->
+            <img :src="book.image.name" />
             <div>
-                <h3>{{name}}</h3>
-                <p>Автор(ы): {{authors}}</p>
-                <p>Год выпуска: {{year}}</p>
-                <p>Издание: {{publish}}</p>
+                <h3>{{book.name}}</h3>
+                <p>Автор(ы): {{book.author}}</p>
+                <p>Год выпуска: {{book.year}}</p>
+                <p>Издание: {{book.publish.name}}</p>
+                <p>Выложил: {{book.uploadUser.name}}</p>
             </div>
           </div>
           <div>
@@ -20,12 +22,7 @@
 <script>
 export default {
  name: 'BookCard',
- props: {
-    name: String,
-    authors: String,
-    year: String,
-    publish: String
- }   
+ props: ["book"]   
 }
 </script>
 
