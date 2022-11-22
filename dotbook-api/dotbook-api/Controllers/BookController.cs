@@ -5,9 +5,7 @@ using dotbook_api.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace dotbook_api.Controllers
 {
@@ -28,42 +26,46 @@ namespace dotbook_api.Controllers
         [HttpGet("{id}")]
         public Book GetById(int id)
         {
-            return _bookService.GetById(id);
+            return _bookService.GetById(id, GetUserId());
         }
 
         [HttpGet]
         public IEnumerable<Book> Get([FromQuery] BaseQueryParams filter = null, [FromQuery] string search = "")
         {
-            return _bookService.GetBySearch(filter, search);
+            return _bookService.GetBySearch(GetUserId(), filter, search);
         }
 
         [Authorize]
         [HttpGet("uploads")]
         public IEnumerable<Book> GetUploads([FromQuery] BaseQueryParams filter = null, [FromQuery] string search = "")
         {
-            var uid = _userService.GetIdByEmail(HttpContext.User.Identity.Name);
-            return _bookService.GetUserUploads(uid, filter, search);
+            return _bookService.GetUserUploads(GetUserId(), filter, search);
         }
 
         [Authorize]
         [HttpGet("favorites")]
         public IEnumerable<Book> GetFavorites([FromQuery] BaseQueryParams filter = null, [FromQuery] string search = "")
         {
-            var uid = _userService.GetIdByEmail(HttpContext.User.Identity.Name);
-            return _bookService.GetUserFavorites(uid, filter, search);
+            return _bookService.GetUserFavorites(GetUserId(), filter, search);
         }
 
         [HttpGet("bythemes")]
         public IEnumerable<Book> GetByThemes([FromQuery] IEnumerable<int> themeId, [FromQuery] BaseQueryParams filter = null, [FromQuery] string search = "")
         {
-            return _bookService.GetByThemes(themeId, filter, search);
+            return _bookService.GetByThemes(GetUserId(), themeId, filter, search);
         }
 
         [HttpPost]
         public Book Save([FromForm] BookSaveDto book)
         {
-            var uid = 1; //_userService.GetIdByEmail(_httpContext.User.Identity.Name);
-            return _bookService.Save(book, uid);
+            return _bookService.Save(book, GetUserId());
+        }
+
+        private int GetUserId()
+        {
+            return HttpContext.User.Identity.IsAuthenticated
+                ? _userService.GetIdByEmail(HttpContext.User.Identity.Name)
+                : 0;
         }
     }
 }

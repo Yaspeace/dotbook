@@ -42,6 +42,7 @@ namespace dotbook_api
             services.AddSingleton<FileClient>();
             services.AddTransient<BaseCrudService<SavedFile>>();
             services.AddTransient<BaseReadService<Theme>>();
+            services.AddTransient<FavoritesService>();
             services.AddTransient<AccountService>();
             services.AddTransient<BookService>();
             services.AddTransient<PublishService>();

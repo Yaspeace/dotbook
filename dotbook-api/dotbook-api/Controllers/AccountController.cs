@@ -51,5 +51,11 @@ namespace dotbook_api.Controllers
         {
             await _service.Logout(HttpContext);
         }
+
+        [HttpGet("authorized")]
+        public bool IsAuthorized()
+        {
+            return HttpContext.User.Identity.IsAuthenticated;
+        }
     }
 }

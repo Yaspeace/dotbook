@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using dotbook_api.DataAccess.Context;
 using dotbook_api.DataAccess.TableModels;
 using dotbook_api.Extensions;
@@ -11,48 +10,72 @@ using dotbook_api.Services.Base;
 
 namespace dotbook_api.Services
 {
-    public class BookService : BaseCrudService<Book>
+    public class BookService
     {
+        private readonly DotbookContext _context;
         private readonly BaseCrudService<SavedFile> _fileService;
         private readonly FileClient _fileClient;
         public BookService(
             DotbookContext context,
             FileClient fileClient,
-            BaseCrudService<SavedFile> fileService) : base(context) 
+            BaseCrudService<SavedFile> fileService)
         {
             _fileClient = fileClient;
             _fileService = fileService;
+            _context = context;
         }
 
-        public IEnumerable<Book> GetBySearch(BaseQueryParams filter = null, string search = "")
+        private IQueryable<Book> Get(BaseQueryParams filter = null, string search = "")
         {
-            return this.Get().Filter(filter).Where(x => x.Name.ToLower().Contains(search.ToLower())).ToArray();
+            return _context.Books.Filter(filter).Search(search);
         }
 
-        public IEnumerable<Book> GetUserUploads(int userId, BaseQueryParams filter = null, string search = "")
+        public BookDto GetById(int id, int userId)
         {
-            return this.Get().Filter(filter).Where(x => x.UploadUserId == userId && x.Name.ToLower().Contains(search.ToLower())).ToArray();
+            var dbBook = this.Get().FirstOrDefault(x => x.Id == id) ?? throw new Exception($"Книга с id: {id} не найдена");
+            var book = MapToDto(dbBook);
+            if (userId > 0)
+            {
+                book.IsFavorite = _context.UserFavorites.Any(x => x.UserId == userId && x.BookId == book.Id);
+            }
+            return book;
         }
 
-        public IEnumerable<Book> GetUserFavorites(int userId, BaseQueryParams filter = null, string search = "")
+        public IEnumerable<BookDto> GetBySearch(int userId, BaseQueryParams filter = null, string search = "")
+        {
+            var books = this.Get(filter, search).ToArray().Select(x => MapToDto(x));
+            SetFavorites(books, userId);
+            return books;
+        }
+
+        public IEnumerable<BookDto> GetUserUploads(int userId, BaseQueryParams filter = null, string search = "")
+        {
+            var books = this.Get(filter, search).Where(x => x.UploadUserId == userId).ToArray().Select(x => MapToDto(x));
+            SetFavorites(books, userId);
+            return books;
+        }
+
+        public IEnumerable<BookDto> GetUserFavorites(int userId, BaseQueryParams filter = null, string search = "")
         {
             var bookIds = _context.UserFavorites
                 .Where(x => x.UserId == userId)
-                .Filter(filter)
                 .Select(x => x.BookId).ToArray();
-            return _context.Books.Where(x => bookIds.Contains(x.Id) && x.Name.ToLower().Contains(search.ToLower())).ToArray();
+            var books = this.Get(filter, search).Where(x => bookIds.Contains(x.Id)).ToArray().Select(x => MapToDto(x));
+            foreach (var book in books) book.IsFavorite = true;
+            return books;
         }
 
-        public IEnumerable<Book> GetByThemes(IEnumerable<int> themesIds, BaseQueryParams filter = null, string search = "")
+        public IEnumerable<BookDto> GetByThemes(int userId, IEnumerable<int> themesIds, BaseQueryParams filter = null, string search = "")
         {
             var bookIds = _context.BookThemes
                 .Where(x => themesIds.Contains(x.ThemeId))
-                .Filter(filter)
                 .Select(x => x.BookId).ToArray();
-            return _context.Books.Where(x => bookIds.Contains(x.Id) && x.Name.ToLower().Contains(search.ToLower())).ToArray();
+            var books = this.Get(filter, search).Where(x => bookIds.Contains(x.Id)).ToArray().Select(x => MapToDto(x));
+            SetFavorites(books, userId);
+            return books;
         }
 
-        public Book Save(BookSaveDto book, int userId)
+        public BookDto Save(BookSaveDto book, int userId)
         {
             Book bookToSave = book;
             var img = new SavedFile();
@@ -70,9 +93,39 @@ namespace dotbook_api.Services
             bookToSave.PdfId = pdf.Id;
             bookToSave.UploadUserId = userId;
 
-            var res = this.Add(bookToSave);
+            var res = _context.Books.Add(bookToSave);
             _context.SaveChanges();
-            return res;
+
+            return GetById(res.Entity.Id, userId);
+        }
+
+        private BookDto MapToDto(Book entity)
+        {
+            return new BookDto()
+            {
+                Id = entity.Id,
+                Author = entity.Author,
+                Image = entity.Image,
+                Name = entity.Name,
+                Pdf = entity.Pdf,
+                Publish = entity.Publish,
+                PublishYear = entity.PublishYear,
+                UploadUser = entity.UploadUser,
+                IsFavorite = false
+            };
+        }
+
+        /// <summary>
+        /// Установить у книг флаг, являются ли они избранными для данного юзера
+        /// </summary>
+        /// <param name="books">Список книг</param>
+        /// <param name="userId">Id пользователя</param>
+        private void SetFavorites(IEnumerable<BookDto> books, int userId)
+        {
+            if (userId <= 0) return;
+
+            var favoritesIds = _context.UserFavorites.Where(x => x.UserId == userId).Select(x => x.BookId).ToArray();
+            foreach (var book in books) book.IsFavorite = favoritesIds.Contains(book.Id);
         }
     }
 }

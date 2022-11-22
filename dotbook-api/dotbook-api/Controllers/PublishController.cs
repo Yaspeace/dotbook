@@ -28,11 +28,5 @@ namespace dotbook_api.Controllers
         {
             return _publishSrv.Search(filter, search);
         }
-
-        [HttpPost]
-        public string Aboba()
-        {
-            return "Aboba";
-        }
     }
 }
