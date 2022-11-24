@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using dotbook_api.DataAccess.Context;
 using dotbook_api.DataAccess.TableModels;
 using dotbook_api.Extensions;
@@ -82,7 +83,7 @@ namespace dotbook_api.Services
             return books;
         }
 
-        public BookDto Save(BookSaveDto book, int userId)
+        public async Task<BookDto> Save(BookSaveDto book, int userId)
         {
             Book bookToSave = book;
             var img = new SavedFile();
@@ -93,8 +94,18 @@ namespace dotbook_api.Services
 
             _context.SaveChanges();
 
-            img.Name = _fileClient.SaveImage(book.FileImg, img.Id);
-            pdf.Name = _fileClient.SavePdf(book.FilePdf, pdf.Id);
+            try
+            {
+                img.Name = await _fileClient.SaveImageAsync(book.FileImg, img.Id);
+                pdf.Name = await _fileClient.SavePdfAsync(book.FilePdf, pdf.Id);
+            }
+            catch (Exception ex)
+            {
+                _context.Remove(img);
+                _context.Remove(pdf);
+                _context.SaveChanges();
+                throw new Exception(ex.Message);
+            }
 
             bookToSave.ImageId = img.Id;
             bookToSave.PdfId = pdf.Id;

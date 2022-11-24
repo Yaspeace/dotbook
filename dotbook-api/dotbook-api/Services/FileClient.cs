@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
@@ -7,59 +9,44 @@ namespace dotbook_api.Services
 {
     public class FileClient
     {
-        private readonly string _imgDir;
-        private readonly string _pdfDir;
+        private readonly HttpClient _client;
+        private readonly string _apisaveUrl;
 
         public FileClient(IConfiguration configuration)
         {
-            _imgDir = configuration.GetSection("CloudUrls").GetValue<string>("ImageDir");
-            _pdfDir = configuration.GetSection("CloudUrls").GetValue<string>("PdfDir");
-        }
-
-        public string SaveImage(IFormFile image, int id)
-        {
-            return SaveFile(image, id, _imgDir, "image", "png");
-        }
-
-        public string SavePdf(IFormFile pdf, int id)
-        {
-            return SaveFile(pdf, id, _pdfDir, "pdf", "pdf");
+            _apisaveUrl = configuration.GetSection("CloudUrls").GetValue<string>("ApiSave");
+            _client = new HttpClient();
         }
 
         public async Task<string> SaveImageAsync(IFormFile image, int id)
         {
-            return await SaveFileAsync(image, id, _imgDir, "image", "png");
+            return await SaveFileAsync(image, id, true, "png");
         }
 
         public async Task<string> SavePdfAsync(IFormFile pdf, int id)
         {
-            return await SaveFileAsync(pdf, id, _pdfDir, "pdf", "pdf");
+            return await SaveFileAsync(pdf, id, false, "pdf");
         }
 
-        private string SaveFile(IFormFile file, int id, string dir, string prefix, string suffix)
+        private async Task<string> SaveFileAsync(IFormFile file, int id, bool isImage, string postfix)
         {
-            var dirpath = "/" + dir;
-            if (!Directory.Exists(dirpath)) Directory.CreateDirectory(dirpath);
-            var path = dirpath + "/" + prefix + id.ToString() + "." + suffix;
-            if (File.Exists(path)) File.Delete(path);
-            using (var fileStream = new FileStream(path, FileMode.Create))
+            var content = new MultipartFormDataContent();
+            content.Add(new StreamContent(file.OpenReadStream()), "file", file.Name);
+            content.Add(new StringContent(id.ToString()), "id");
+            content.Add(new StringContent(postfix), "postfix");
+            content.Add(new StringContent(isImage ? "1" : "0"), "isImage");
+            var result = new HttpResponseMessage();
+            try
             {
-                file.CopyTo(fileStream);
+                result = await _client.PostAsync(_apisaveUrl, content);
             }
-            return path;
-        }
-
-        private async Task<string> SaveFileAsync(IFormFile file, int id, string dir, string prefix, string suffix)
-        {
-            var dirpath = "/" + dir;
-            if (!Directory.Exists(dirpath)) Directory.CreateDirectory(dirpath);
-            var path = dirpath + "/" + prefix + id.ToString() + "." + suffix;
-            if (File.Exists(path)) File.Delete(path);
-            using (var fileStream = new FileStream(path, FileMode.Create))
+            catch (Exception ex)
             {
-                await file.CopyToAsync(fileStream);
+                throw new Exception(ex.Message);
             }
-            return path;
+            var message = await result.Content.ReadAsStringAsync();
+            if (result.IsSuccessStatusCode) return message;
+            throw new System.Exception($"Ошибка сохранения файла: {message}");
         }
     }
 }

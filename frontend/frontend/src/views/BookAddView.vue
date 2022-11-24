@@ -9,7 +9,6 @@
                     drop-placeholder="Перетащите для прикрепления..."
                     accept=".jpg, .png"
                 ></b-form-file>
-                <!--<input type="hidden" name="FileImg" :value="image" />-->
                 <b-form-file
                     v-model="pdf"
                     :state="Boolean(pdf)"
@@ -17,7 +16,6 @@
                     drop-placeholder="Перетащите для прикрепления..."
                     accept=".pdf"
                 ></b-form-file>
-                <!--<input type="hidden" name="FilePdf" :value="pdf" />-->
                 <input v-model="name" type="text" placeholder="Название книги" name="Name" />
                 <input v-model="author" type="text" placeholder="Автор(-ы)" name="Author" />
                 <input v-model="year" type="text" placeholder="Год публикации" name="PublishYear" />
@@ -27,7 +25,6 @@
                 option-value="id"
                 :custom-text="getText"
                 placeholder="Издательство..."></model-list-select>
-                <!--<input type="hidden" :value="chosenPublishId" name="PublishId" />-->
                 <input type="submit" value="Добавить книгу!" />
             </form>
         </div>
@@ -70,7 +67,8 @@ export default {
         data.append('PublishId', this.chosenPublishId);
         data.append('FileImg', this.image);
         data.append('FilePdf', this.pdf);
-        this.$http.post('/Book', data);
+        this.$http.post('/Book', data)
+            .then(() => this.$router.push({ name: 'home' }));
     }
   },
   components: {

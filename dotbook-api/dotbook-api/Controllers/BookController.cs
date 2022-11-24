@@ -5,7 +5,9 @@ using dotbook_api.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace dotbook_api.Controllers
 {
@@ -30,35 +32,44 @@ namespace dotbook_api.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<Book> Get([FromQuery] BaseQueryParams filter = null, [FromQuery] string search = "")
+        public IEnumerable<BookDto> Get([FromQuery] BaseQueryParams filter = null, [FromQuery] string search = "")
         {
             return _bookService.GetBySearch(GetUserId(), filter, search);
         }
 
         [Authorize]
         [HttpGet("uploads")]
-        public IEnumerable<Book> GetUploads([FromQuery] BaseQueryParams filter = null, [FromQuery] string search = "")
+        public IEnumerable<BookDto> GetUploads([FromQuery] BaseQueryParams filter = null, [FromQuery] string search = "")
         {
             return _bookService.GetUserUploads(GetUserId(), filter, search);
         }
 
         [Authorize]
         [HttpGet("favorites")]
-        public IEnumerable<Book> GetFavorites([FromQuery] BaseQueryParams filter = null, [FromQuery] string search = "")
+        public IEnumerable<BookDto> GetFavorites([FromQuery] BaseQueryParams filter = null, [FromQuery] string search = "")
         {
             return _bookService.GetUserFavorites(GetUserId(), filter, search);
         }
 
         [HttpGet("bythemes")]
-        public IEnumerable<Book> GetByThemes([FromQuery] IEnumerable<int> themeId, [FromQuery] BaseQueryParams filter = null, [FromQuery] string search = "")
+        public IEnumerable<BookDto> GetByThemes([FromQuery] IEnumerable<int> themeId, [FromQuery] BaseQueryParams filter = null, [FromQuery] string search = "")
         {
             return _bookService.GetByThemes(GetUserId(), themeId, filter, search);
         }
 
         [HttpPost]
-        public Book Save([FromForm] BookSaveDto book)
+        public async Task<ResponceData<Book>> Save([FromForm] BookSaveDto book)
         {
-            return _bookService.Save(book, GetUserId());
+            try
+            {
+                var data = await _bookService.Save(book, GetUserId());
+                return ResponceData<Book>.Success(data);
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = 400;
+                return ResponceData<Book>.Error(ex);
+            }
         }
 
         private int GetUserId()
