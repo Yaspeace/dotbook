@@ -17,11 +17,11 @@ namespace dotbook_api.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<string> Register(string name, string email, string password)
+        public async Task<string> Register(string login, string password)
         {
             try
             {
-                await _service.Register(name, email, password, HttpContext);
+                await _service.Register(login, password, HttpContext);
                 return string.Empty;
             }
             catch(Exception ex)
@@ -32,11 +32,11 @@ namespace dotbook_api.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<string> Login(string email, string password)
+        public async Task<string> Login(string login, string password)
         {
             try
             {
-                await _service.Login(email, password, HttpContext);
+                await _service.Login(login, password, HttpContext);
                 return string.Empty;
             }
             catch(Exception ex)

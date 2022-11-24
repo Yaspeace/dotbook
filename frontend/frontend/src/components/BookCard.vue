@@ -3,18 +3,18 @@
     <div class="book-card">
           <div class="book-card-sub">
             <!--<img src="@/assets/covers/cover1.png"/>-->
-            <img :src="book.image.name" />
+            <img :src="this.$FilesHost + book.image.name" />
             <div>
                 <h3>{{book.name}}</h3>
                 <p>Автор(ы): {{book.author}}</p>
-                <p>Год выпуска: {{book.year}}</p>
+                <p>Год выпуска: {{book.publishYear}}</p>
                 <p>Издание: {{book.publish.name}}</p>
                 <p>Выложил: {{book.uploadUser.name}}</p>
             </div>
           </div>
           <div>
-              <a class="btn btn-outline-dark" href="index.html">В избранное</a>
-              <a class="btn btn-dark ml-3" href="index.html"><b>Читать!</b></a>
+              <a  class="btn btn-outline-dark" href="#">В избранное</a>
+              <a target="_blank" rel="noopener noreferrer" class="btn btn-dark ml-3" :href="this.$FilesHost + book.pdf.name"><b>Читать!</b></a>
           </div>
         </div>
 </template>
@@ -22,7 +22,7 @@
 <script>
 export default {
  name: 'BookCard',
- props: ["book"]   
+ props: ["book"]
 }
 </script>
 

@@ -25,15 +25,16 @@ namespace dotbook_api.Services
         /// <param name="email">Эл. почта</param>
         /// <param name="password">Пароль</param>
         /// <param name="httpContext">Http контекст сессии</param>
-        public async Task Login(string email, string password, HttpContext httpContext)
+        public async Task Login(string name, string password, HttpContext httpContext)
         {
-            ValidateEmail(email);
+            // ValidateEmail(email);
+            ValidateName(name);
             ValidatePassword(password);
 
-            if (!_context.Users.Any(x => x.Email == email && x.Password == password))
-                throw new Exception("Неверные эл. почта и/или пароль");
+            if (!_context.Users.Any(x => x.Name == name && x.Password == password))
+                throw new Exception("Неверные имя пользователя и/или пароль");
 
-            await AuthorizeAsync(email, httpContext);
+            await AuthorizeAsync(name, httpContext);
         }
 
         /// <summary>
@@ -43,25 +44,24 @@ namespace dotbook_api.Services
         /// <param name="email">Эл. почта</param>
         /// <param name="password">Пароль</param>
         /// <param name="httpContext">Http контекст сессии</param>
-        public async Task Register(string name, string email, string password, HttpContext httpContext)
+        public async Task Register(string name, string password, HttpContext httpContext)
         {
-            ValidateEmail(email);
+            // ValidateEmail(email);
             ValidateName(name);
             ValidatePassword(password);
 
-            if (_context.Users.Any(x => x.Email == email))
-                throw new Exception($"Пользователь с почтой {email} уже зарегистрирован");
+            if (_context.Users.Any(x => x.Name == name))
+                throw new Exception($"Пользователь с именем {name} уже зарегистрирован");
 
             var newUser = new User()
             {
                 Name = name,
-                Email = email,
                 Password = password
             };
             _context.Users.Add(newUser);
             _context.SaveChanges();
 
-            await AuthorizeAsync(email, httpContext);
+            await AuthorizeAsync(name, httpContext);
         }
 
         public async Task Logout(HttpContext httpContext)
@@ -75,9 +75,9 @@ namespace dotbook_api.Services
         /// <param name="email"></param>
         /// <param name="httpContext"></param>
         /// <returns></returns>
-        private async Task AuthorizeAsync(string email, HttpContext httpContext)
+        private async Task AuthorizeAsync(string name, HttpContext httpContext)
         {
-            var claims = new Claim[] { new Claim(ClaimsIdentity.DefaultNameClaimType, email) };
+            var claims = new Claim[] { new Claim(ClaimsIdentity.DefaultNameClaimType, name) };
             ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme, ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
             await httpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
         }
@@ -101,7 +101,7 @@ namespace dotbook_api.Services
 
         private void ValidateName(string name)
         {
-            if (string.IsNullOrEmpty(name) || name.Length < 4) throw new Exception("Отображаемое имя не должно быть короче 4 символов");
+            if (string.IsNullOrEmpty(name) || name.Length < 4) throw new Exception("Имя пользователя не должно быть короче 4 символов");
         }
 
         private void ValidatePassword(string password)

@@ -12,9 +12,9 @@ namespace dotbook_api.Services
             _context = context;
         }
 
-        public int GetIdByEmail(string email)
+        public int GetIdByEmail(string name)
         {
-            return _context.Users.Where(x => x.Email == email).Select(x => x.Id).FirstOrDefault();
+            return _context.Users.Where(x => x.Name == name).Select(x => x.Id).FirstOrDefault();
         }
     }
 }

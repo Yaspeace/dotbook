@@ -7,6 +7,7 @@ using dotbook_api.Extensions;
 using dotbook_api.Models;
 using dotbook_api.Models.Base;
 using dotbook_api.Services.Base;
+using Microsoft.EntityFrameworkCore;
 
 namespace dotbook_api.Services
 {
@@ -27,7 +28,13 @@ namespace dotbook_api.Services
 
         private IQueryable<Book> Get(BaseQueryParams filter = null, string search = "")
         {
-            return _context.Books.Filter(filter).Search(search);
+            return _context.Books
+                .Include(x => x.Image)
+                .Include(x => x.Pdf)
+                .Include(x => x.UploadUser)
+                .Include(x => x.Publish)
+                .Filter(filter)
+                .Search(search);
         }
 
         public BookDto GetById(int id, int userId)

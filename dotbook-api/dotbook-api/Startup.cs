@@ -66,6 +66,7 @@ namespace dotbook_api
                                 return Task.CompletedTask;
                             }
                         };
+                        opt.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.None;
                     });
             services.AddAuthorization();
         }
@@ -74,7 +75,7 @@ namespace dotbook_api
         {
             //if(!env.IsDevelopment()) app.UseHsts();
 
-            app.UseCors(opt => opt.AllowAnyOrigin().AllowAnyMethod().WithHeaders("accept", "content-type", "origin"));
+            app.UseCors(opt => opt.WithOrigins("http://localhost:8080").AllowAnyMethod().WithHeaders("accept", "content-type", "origin").AllowCredentials());
 
             app.UseHttpsRedirection();
             

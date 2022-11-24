@@ -12,6 +12,7 @@
 <script>
 export default {
     name: 'SideMenu',
+    props: ['books', 'search'],
     data() {
       return {
         themes: []
@@ -19,11 +20,12 @@ export default {
     },
     created() {
       this.$http.get('/Theme')
-        .then((responce) => this.themes = responce.data)
+        .then((responce) => this.themes = responce.data);
     },
     methods: {
       themeClick: function(id) {
-        alert(id);
+        this.$http.get('/Book/bythemes', { params: { themeId: id } })
+          .then((responce) => this.books = responce.data);
       }
     }
 }
