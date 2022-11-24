@@ -99,5 +99,9 @@ input {
     border: 1px solid gray;
     border-radius: 4px;
     padding: 5px;
+    text-align: center;
+}
+select {
+    text-align: center;
 }
 </style>
