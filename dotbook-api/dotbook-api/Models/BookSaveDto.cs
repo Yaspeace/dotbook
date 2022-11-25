@@ -1,5 +1,6 @@
 ﻿using dotbook_api.DataAccess.TableModels;
 using Microsoft.AspNetCore.Http;
+using System.Collections.Generic;
 
 namespace dotbook_api.Models
 {
@@ -14,5 +15,10 @@ namespace dotbook_api.Models
         /// Текст книги в формате PDF
         /// </summary>
         public IFormFile FilePdf { get; set; }
+
+        /// <summary>
+        /// Идентификаторы тем книги
+        /// </summary>
+        public string Themes { get; set; }
     }
 }

@@ -27,7 +27,7 @@ namespace dotbook_api.Services
             _context = context;
         }
 
-        private IQueryable<Book> Get(BaseQueryParams filter = null, string search = "")
+        public IQueryable<Book> Get(BaseQueryParams filter = null, string search = "")
         {
             return _context.Books
                 .Include(x => x.Image)
@@ -51,14 +51,14 @@ namespace dotbook_api.Services
 
         public IEnumerable<BookDto> GetBySearch(int userId, BaseQueryParams filter = null, string search = "")
         {
-            var books = this.Get(filter, search).ToArray().Select(x => MapToDto(x));
+            var books = this.Get(filter, search).ToArray().Select(x => MapToDto(x)).ToArray();
             SetFavorites(books, userId);
             return books;
         }
 
         public IEnumerable<BookDto> GetUserUploads(int userId, BaseQueryParams filter = null, string search = "")
         {
-            var books = this.Get(filter, search).Where(x => x.UploadUserId == userId).ToArray().Select(x => MapToDto(x));
+            var books = this.Get(filter, search).Where(x => x.UploadUserId == userId).ToArray().Select(x => MapToDto(x)).ToArray();
             SetFavorites(books, userId);
             return books;
         }
@@ -68,7 +68,7 @@ namespace dotbook_api.Services
             var bookIds = _context.UserFavorites
                 .Where(x => x.UserId == userId)
                 .Select(x => x.BookId).ToArray();
-            var books = this.Get(filter, search).Where(x => bookIds.Contains(x.Id)).ToArray().Select(x => MapToDto(x));
+            var books = this.Get(filter, search).Where(x => bookIds.Contains(x.Id)).ToArray().Select(x => MapToDto(x)).ToArray();
             foreach (var book in books) book.IsFavorite = true;
             return books;
         }
@@ -78,7 +78,7 @@ namespace dotbook_api.Services
             var bookIds = _context.BookThemes
                 .Where(x => themesIds.Contains(x.ThemeId))
                 .Select(x => x.BookId).ToArray();
-            var books = this.Get(filter, search).Where(x => bookIds.Contains(x.Id)).ToArray().Select(x => MapToDto(x));
+            var books = this.Get(filter, search).Where(x => bookIds.Contains(x.Id)).ToArray().Select(x => MapToDto(x)).ToArray();
             SetFavorites(books, userId);
             return books;
         }
@@ -114,6 +114,17 @@ namespace dotbook_api.Services
             var res = _context.Books.Add(bookToSave);
             _context.SaveChanges();
 
+            var themes = book.Themes.Split(',');
+            foreach (var themeId in themes)
+            {
+                _context.BookThemes.Add(new BookTheme()
+                {
+                    BookId = res.Entity.Id,
+                    ThemeId = int.Parse(themeId)
+                });
+            }
+            _context.SaveChanges();
+
             return GetById(res.Entity.Id, userId);
         }
 
@@ -131,6 +142,7 @@ namespace dotbook_api.Services
                 UploadUser = entity.UploadUser,
                 IsFavorite = false
             };
+
         }
 
         /// <summary>

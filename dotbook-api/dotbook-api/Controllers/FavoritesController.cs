@@ -19,14 +19,14 @@ namespace dotbook_api.Controllers
         }
 
         [HttpPost]
-        public bool AddToFavorites([FromQuery] int bookId)
+        public bool AddToFavorites(int bookId)
         {
             int uid = _uSrv.GetIdByEmail(HttpContext.User.Identity.Name);
             return _service.AddFavorite(uid, bookId);
         }
 
-        [HttpDelete]
-        public void DeleteFavorite([FromQuery] int bookId)
+        [HttpPost("delete")]
+        public void DeleteFavorite(int bookId)
         {
             int uid = _uSrv.GetIdByEmail(HttpContext.User.Identity.Name);
             _service.RemoveFavorite(uid, bookId);

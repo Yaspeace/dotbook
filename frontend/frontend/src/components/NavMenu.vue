@@ -1,11 +1,12 @@
 <template>
     <div class="navmenu">
-        <router-link to="/"><img class="navmenu-main-image" src="@/assets/dotbook.png"/></router-link>
-        <form class="form-inline navmenu-item-2">
-          <input class="form-control mr-sm-2 navmenu-search-inp" type="search" placeholder="Найти книги..." aria-label="Search">
-          <button class="btn btn-outline-dark my-2 my-sm-0" type="submit">Найти!</button>
+        <a href="#" v-on:click="home"><img class="navmenu-main-image" src="@/assets/dotbook.png" /></a>
+        <form class="form-inline navmenu-item-2" ref="searchForm">
+          <input class="form-control mr-sm-2 navmenu-search-inp" placeholder="Найти книги..." aria-label="Search" v-on:input="searchChanged">
+          <button class="btn btn-outline-dark my-2 my-sm-0" v-on:click="find">Найти!</button>
         </form>
-        <a href="index.html"><img class="navmenu-item" src="@/assets/liked.png"/></a>
+        <a v-if="isFavorites" href="#" v-on:click="findFavorites"><img class="navmenu-item" src="@/assets/liked_fill.png"/></a>
+        <a v-else href="#" v-on:click="findFavorites"><img class="navmenu-item" src="@/assets/liked.png"/></a>
         <router-link v-if="!authorized" :to="{ name: 'login', params: { register: 'false' } }"><img class="navmenu-item" src="@/assets/login.png"/></router-link>
         <div v-else class="pop-parent">
           <a v-on:click="popVisible = !popVisible" href="#"><img class="navmenu-item" src="@/assets/login_auth.png"/></a>
@@ -20,6 +21,7 @@
 <script>
 export default {
     name: 'NavMenu',
+    props: ['isFavorites'],
     data() {
       return {
         authorized: false,
@@ -34,6 +36,21 @@ export default {
       logout() {
         this.$http.post('/Account/logout')
           .then(() => this.authorized = false);
+      },
+      searchChanged(e) {
+        this.$emit('search-changed', e.target.value);
+      },
+      find() {
+        this.$emit('find');
+      },
+      reset() {
+        this.$refs.searchForm.reset();
+      },
+      findFavorites() {
+        this.$emit('find-favorites');
+      },
+      home() {
+        this.$emit('home');
       }
     }
 }

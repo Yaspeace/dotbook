@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace dotbook_api.Controllers
@@ -37,11 +38,24 @@ namespace dotbook_api.Controllers
             return _bookService.GetBySearch(GetUserId(), filter, search);
         }
 
+        [HttpGet("count")]
+        public int GetCount([FromQuery] string search = "")
+        {
+            return _bookService.Get(search: search).Count();
+        }
+
         [Authorize]
         [HttpGet("uploads")]
         public IEnumerable<BookDto> GetUploads([FromQuery] BaseQueryParams filter = null, [FromQuery] string search = "")
         {
             return _bookService.GetUserUploads(GetUserId(), filter, search);
+        }
+
+        [Authorize]
+        [HttpGet("uploads/count")]
+        public int UploadsCount([FromQuery] string search = "")
+        {
+            return _bookService.GetUserUploads(GetUserId(), null, search).Count();
         }
 
         [Authorize]
@@ -51,10 +65,23 @@ namespace dotbook_api.Controllers
             return _bookService.GetUserFavorites(GetUserId(), filter, search);
         }
 
+        [Authorize]
+        [HttpGet("favorites/count")]
+        public int FavoritesCount([FromQuery] string search = "")
+        {
+            return _bookService.GetUserFavorites(GetUserId(), null, search).Count();
+        }
+
         [HttpGet("bythemes")]
         public IEnumerable<BookDto> GetByThemes([FromQuery] IEnumerable<int> themeId, [FromQuery] BaseQueryParams filter = null, [FromQuery] string search = "")
         {
             return _bookService.GetByThemes(GetUserId(), themeId, filter, search);
+        }
+
+        [HttpGet("bythemes/count")]
+        public int ByThemesCount([FromQuery] IEnumerable<int> themeId, [FromQuery] string search = "")
+        {
+            return _bookService.GetByThemes(0, themeId, null, search).Count();
         }
 
         [HttpPost]

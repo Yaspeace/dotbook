@@ -3,7 +3,7 @@
         <div class="d-flex text-center">
           <h5>Книги по категориям</h5>
         </div>
-        <div v-for="theme in themes" :key="theme.id" v-on:click="themeClick(theme.id)" class="menu-item">
+        <div v-for="theme in themes" :key="theme.id" v-on:click="themeClick(theme.id)" :class="'menu-item' + (ThemeId == theme.id ? ' chosen' : '')">
           <a href="#">{{theme.name}}</a>
         </div>
       </div>
@@ -12,7 +12,7 @@
 <script>
 export default {
     name: 'SideMenu',
-    props: ['books', 'search'],
+    props: ['ThemeId'],
     data() {
       return {
         themes: []
@@ -24,8 +24,7 @@ export default {
     },
     methods: {
       themeClick: function(id) {
-        this.$http.get('/Book/bythemes', { params: { themeId: id } })
-          .then((responce) => this.books = responce.data);
+        this.$emit('theme-click', id);
       }
     }
 }
@@ -47,6 +46,10 @@ export default {
   transition: 0.5s;
   background: white;
   color: black;
+}
+.chosen {
+  background: black;
+  color: white;
 }
 .menu-item:hover {
   background: black;

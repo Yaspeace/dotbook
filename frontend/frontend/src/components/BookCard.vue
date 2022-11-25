@@ -1,8 +1,6 @@
-<!--TODO: накинуть стили, разобраться с роутами-->
 <template>
     <div class="book-card">
           <div class="book-card-sub">
-            <!--<img src="@/assets/covers/cover1.png"/>-->
             <img :src="this.$FilesHost + book.image.name" />
             <div>
                 <h3>{{book.name}}</h3>
@@ -13,7 +11,8 @@
             </div>
           </div>
           <div>
-              <a  class="btn btn-outline-dark" href="#">В избранное</a>
+              <a v-if="(!book.isFavorite && added) || (book.isFavorite && !removed)" class="btn btn-dark" v-on:click="remove" :disabled="btnDisabled">Убрать из избранного</a>
+              <a v-else class="btn btn-outline-dark" v-on:click="add">В избранное</a>
               <a target="_blank" rel="noopener noreferrer" class="btn btn-dark ml-3" :href="this.$FilesHost + book.pdf.name"><b>Читать!</b></a>
           </div>
         </div>
@@ -22,7 +21,44 @@
 <script>
 export default {
  name: 'BookCard',
- props: ["book"]
+ props: ["book"],
+ data() {
+  return {
+    added: false,
+    removed: false,
+    btnDisabled: false
+  }
+ },
+ methods: {
+  add() {
+    this.btnDisabled = true;
+    this.$http.post('/Favorites', null, { params: { bookId: this.book.id } })
+      .then((responce) => {
+        this.added = responce.data;
+        this.removed = !responce.data;
+        this.btnDisabled = false;
+      })
+      .catch((error) => {
+        if(error.response.status == 401) {
+          this.$router.push({ name: 'login', params: { register: 'false' } });
+        }
+      });
+  },
+  remove() {
+    this.btnDisabled = true;
+    this.$http.post('/Favorites/delete', null, { params: { bookId: this.book.id } })
+      .then((responce) => {
+        this.added = false;
+        this.removed = true;
+        this.btnDisabled = false;
+      })
+      .catch((error) => {
+        if(error.response.status == 401) {
+          this.$router.push({ name: 'login', params: { register: 'false' } });
+        }
+      });
+  }
+ }
 }
 </script>
 

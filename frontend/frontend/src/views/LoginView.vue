@@ -1,5 +1,6 @@
 <template>
-<div>
+<div class="relative">
+    <div :class="'cover' + (covered ? '' : ' invisible')"></div>
     <div class="d-flex flex-row justify-content-center">
         <div class="d-flex flex-column justify-content-center text-center inner-wrapper">
             <h1 v-if="getBool(register)">Регистрация</h1>
@@ -33,7 +34,8 @@ export default {
         return {
             login: "",
             password: "",
-            passwordCheck: ""
+            passwordCheck: "",
+            covered: false
         }
     },
     methods: {
@@ -41,24 +43,33 @@ export default {
             return value == 'true';
         },
         logIn() {
+            this.covered = true;
             this.$http.post('/Account/login', null, {
                 params: {
                     login: this.login,
                     password: this.password
                 }
             })
-            .then(() => this.$router.push({ name: 'home' }));
+            .then(() => {
+                this.covered = false;
+                this.$router.push({ name: 'home' });
+            })
+            .catch(() => this.covered = false);
         },
         registerUser() {
-            console.log(this.password == this.passwordCheck);
             if(this.password == this.passwordCheck) {
+                this.covered = true;
                 this.$http.post('/Account/register', null, {
                     params: {
                         login: this.login,
                         password: this.password
                     }
                 })
-                .then(() => this.$router.push({ name: 'home' }));
+                .then(() => {
+                    this.covered = false;
+                    this.$router.push({ name: 'home' });
+                })
+                .catch(() => this.covered = false);
             }
         },
         loginOrRegister() {
@@ -75,6 +86,22 @@ export default {
 </script>
 
 <style scoped>
+.invisible {
+    display: none;
+}
+.relative {
+    position: relative;
+}
+.cover {
+    background: rgba(0, 0, 0, 0.8);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1000;
+}
+
 .login {
   height: 90vh;
   display: flex;
